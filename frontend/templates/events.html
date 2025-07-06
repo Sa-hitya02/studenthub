@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Events</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 p-6">
+  <div class="max-w-3xl mx-auto bg-white p-6 rounded-xl shadow">
+    <h1 class="text-2xl font-bold text-blue-600 mb-4">Events</h1>
+    <form method="POST" action="/add-event" class="space-y-3 mb-6">
+      <input name="title" placeholder="Event Title" required class="w-full p-2 border rounded" />
+      <input type="date" name="date" required class="w-full p-2 border rounded" />
+      <textarea name="description" placeholder="Description" required class="w-full p-2 border rounded"></textarea>
+      <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Add Event</button>
+    </form>
+    <a href="/dashboard" class="text-blue-500 hover:underline">← Back to Dashboard</a>
+  </div>
+</body>
+</html>
+
