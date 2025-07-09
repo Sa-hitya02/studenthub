@@ -5,6 +5,10 @@ from datetime import datetime
 from dotenv import load_dotenv
 import certifi  # ✅ For SSL verification
 import os
+import logging
+
+# Setup logging
+logging.basicConfig(level=logging.DEBUG)
 
 # Load environment variables
 load_dotenv()
@@ -16,13 +20,10 @@ CORS(app)
 
 # MongoDB setup
 mongo_uri = os.getenv("MONGO_URI")
-print("DEBUG: Mongo URI:", mongo_uri)  # ✅ Debug print
-
 if not mongo_uri:
     raise ValueError("MONGO_URI not set in .env file")
 
-# ✅ Use certifi to fix SSL handshake on Render
-client = MongoClient(mongo_uri, tls=True, tlsCAFile=certifi.where())
+client = MongoClient(mongo_uri, tlsCAFile=certifi.where())
 db = client["studenthub"]
 
 # Collections
