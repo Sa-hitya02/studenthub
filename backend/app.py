@@ -1,4 +1,4 @@
-xfrom flask import Flask, render_template, request, redirect, url_for, session
+from flask import Flask, render_template, request, redirect, url_for, session
 from flask_cors import CORS
 from pymongo import MongoClient
 from datetime import datetime
