@@ -5,7 +5,7 @@ from datetime import datetime
 from dotenv import load_dotenv
 import os
 
-# Load environment variables from .env
+# Load environment variables
 load_dotenv()
 
 # App setup
@@ -14,9 +14,12 @@ app.secret_key = os.getenv("SECRET_KEY", "default-secret-key")
 CORS(app)
 
 # MongoDB setup
-mongo_uri = os.getenv("MONGO_URI", "mongodb://localhost:27017").strip()
+mongo_uri = os.getenv("MONGO_URI")
+if not mongo_uri:
+    raise ValueError("MONGO_URI not set in .env file")
+
 client = MongoClient(mongo_uri)
-db = client["studenthub"]  # ✅ Explicitly connect to the database
+db = client["studenthub"]
 
 # Collections
 users = db["users"]
@@ -33,19 +36,23 @@ def home():
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     if request.method == 'POST':
-        email = request.form['email']
-        password = request.form['password']
+        email = request.form['email'].strip()
+        password = request.form['password'].strip()
+
         if users.find_one({"email": email}):
             return "User already exists!"
+        
         users.insert_one({"email": email, "password": password})
         return redirect(url_for('login'))
+
     return render_template("register.html")
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
-        email = request.form['email']
-        password = request.form['password']
+        email = request.form['email'].strip()
+        password = request.form['password'].strip()
+
         user = users.find_one({"email": email, "password": password})
         if user:
             session['email'] = email
@@ -65,6 +72,7 @@ def logout():
 def dashboard():
     if 'email' not in session:
         return redirect(url_for('login'))
+
     return render_template("dashboard.html",
         email=session['email'],
         posts=list(posts.find({}, {"_id": 0})),
@@ -126,7 +134,7 @@ def profile():
     except Exception as e:
         return f"Error loading profile: {str(e)}", 500
 
-# ------------------ EVENTS FORM PAGE ------------------
+# ------------------ EVENTS PAGE ------------------
 
 @app.route('/events')
 def events_page():
