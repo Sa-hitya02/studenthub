@@ -1,8 +1,9 @@
-from flask import Flask, render_template, request, redirect, url_for, session
+xfrom flask import Flask, render_template, request, redirect, url_for, session
 from flask_cors import CORS
 from pymongo import MongoClient
 from datetime import datetime
 from dotenv import load_dotenv
+import certifi  # ✅ For SSL verification
 import os
 
 # Load environment variables
@@ -15,10 +16,13 @@ CORS(app)
 
 # MongoDB setup
 mongo_uri = os.getenv("MONGO_URI")
+print("DEBUG: Mongo URI:", mongo_uri)  # ✅ Debug print
+
 if not mongo_uri:
     raise ValueError("MONGO_URI not set in .env file")
 
-client = MongoClient(mongo_uri)
+# ✅ Use certifi to fix SSL handshake on Render
+client = MongoClient(mongo_uri, tls=True, tlsCAFile=certifi.where())
 db = client["studenthub"]
 
 # Collections
